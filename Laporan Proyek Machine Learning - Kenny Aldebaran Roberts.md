@@ -127,23 +127,23 @@ dengan output:
 
 yang menandakan bahwa tidak ada outlier pada data. Hal ini dapat dilihat pada boxplot di notebook juga:
 
-![img](https://www.dropbox.com/scl/fi/ugvilms9fvqis3i4m2zyu/download.png?rlkey=lfy45t6geglg3579u7vp637sn&st=7aoh3nx1&dl=1)
+![img](https://i.imgur.com/vdKVZHi.png)
 
 **Univariate Analysis**
 Menggunakan teknik analisis satu variabel untuk menganalisa data. Histogram data sebagai berikut:
 
-![img](https://www.dropbox.com/scl/fi/03k3w21ute66d4sp9brb0/download-1.png?rlkey=qonavzrhmgste4fhudq5sacsi&st=6rl7en5h&dl=1)
+![img](https://i.imgur.com/U3Joo9e.png)
 
 Dapat dilihat bahwa dataset memiliki distribusi yang rata. Tiga fitur (Num_Bedrooms, Num_Bathrooms, Garage_Size) memiliki distribusi yang terlihat agak aneh karena rentang nilai diskrit mereka yang kecil, namun distribusi mereka juga rata.
 
 **Multivariate Analysis**
 Menggunakan teknik multivariate untuk menunjukkan hubungan antara dua atau lebih variabel pada data. Kali ini, kita tertarik pada hasil hubungan antara variabel target (harga rumah) dengan variabel lainnya.
 
-![img](https://www.dropbox.com/scl/fi/4jmwdpqv2njb3k78h9ena/download-2.png?rlkey=a1te5wowr0xbaqvg3v0b7mzjm&st=mrtec6r7&dl=1)
+![img](https://i.imgur.com/wcqLWBp.png)
 
 Dapat dilihat bahwa Square_Footage memiliki korelasi positif yang kuat, dengan semua fitur lain memiliki korelasi yang lemah karena tidak membentuk pola yang positif atau negatif.
 
-![img](https://www.dropbox.com/scl/fi/py3e8vtl2bwu7w1a8z0z9/download-3.png?rlkey=378eayemy4gjs485f5iv13et6&st=mi5h21ns&dl=1)
+![img](https://i.imgur.com/dkND031.png)
 
 Matriks korelasi di atas mengonfirmasi pengamatan kita dari pairplot, dengan House_Price memiliki korelasi sangat tinggi (0.99) dengan Square_Footage, dan korelasi lemah dengan semua fitur lain. Bagi fitur dengan korelasi sangat kecil (<=0.01), kita akan melakukan drop dengan kode berikut:
 
@@ -331,7 +331,7 @@ Pada tahap ini, kita akan mengevaluasi performa ketiga model menggunakan metrik 
 
 Evaluasi dilakukan dengan ketiga metrik pada set train dan test. Dapat dilihat bahwa ketiga model mengalami peningkatan MSE dan MAE pada test set dibandingkan dengan train set, yang merupakan hal normal. Performa Random Forest paling baik, namun performa AdaBoost paling konsisten pada train dan test set. Perubahan R2 dari train ke test sangat kecil bagi ketiga model, menandakan model tidak overfitting.
 
-![img](https://www.dropbox.com/scl/fi/kl70d8b6g4blrikxj56j8/download-4.png?rlkey=hic19nx85vxx4uj3dni8w96hh&st=wfo4ev3r&dl=1)
+![img](https://i.imgur.com/u38Y1sE.png)
 
 Dapat dilihat dari grafik diatas bahwa performa model Random Forest adalah yang paling baik, dengan MAE dan MSE yang paling kecil, dan R2 yang paling besar, baik pada train set dan test set. AdaBoost memiliki performa kedua paling baik, dan KNN menempati posisi terakhir, dengan performa paling buruk.
 
@@ -402,7 +402,7 @@ Dengan output dataframe sebagai berikut:
 | 3 | 1.04039e+06 | 978179.212127 | 1.047002e+06  | 1.033746e+06  |
 | 4 | 7.94010e+05 | 769437.013846 | 8.125074e+05  | 7.876537e+05  |
 
-![img](https://www.dropbox.com/scl/fi/02c5c44ceciynuo4t9cu1/download-5.png?rlkey=c2e2tm3o0tb3g9lwtmxcff2ia&st=kyabejjr&dl=1)
+![img](https://i.imgur.com/U1lNrfB.png)
 
 Tabel dan grafik diatas menunjukkan bahwa selisih memang kecil dengan nilai asli seperti ditandakan oleh proporsi RMSE dan MAE, dan tingginya nilai R2.
 
@@ -426,10 +426,9 @@ Mari mengevaluasi hasil proyek sesuai dengan statement awal:
 
 Kita telah mengetahui hubungan antara harga rumah dengan fitur-fitur lainnya, yang terlihat pada bagian EDA, dengan pairplot dan matriks korelasi sebagai berikut:
 
-![img](https://www.dropbox.com/scl/fi/4jmwdpqv2njb3k78h9ena/download-2.png?rlkey=a1te5wowr0xbaqvg3v0b7mzjm&st=mrtec6r7&dl=1)
+![img](https://i.imgur.com/wcqLWBp.png)
 
-
-![img](https://www.dropbox.com/scl/fi/py3e8vtl2bwu7w1a8z0z9/download-3.png?rlkey=378eayemy4gjs485f5iv13et6&st=mi5h21ns&dl=1)
+![img](https://i.imgur.com/dkND031.png)
 
 Dapat dilihat bahwa Square_Footage memiliki korelasi positif yang kuat, dengan semua fitur lain memiliki korelasi yang lemah karena tidak membentuk pola yang positif atau negatif. Matriks korelasi di atas mengonfirmasi pengamatan kita dari pairplot, dengan House_Price memiliki korelasi sangat tinggi (0.99) dengan Square_Footage, dan korelasi lemah dengan semua fitur lain.
 
@@ -437,7 +436,7 @@ Dapat dilihat bahwa Square_Footage memiliki korelasi positif yang kuat, dengan s
 
 Kita telah membuat 3 model regresi yang dapat memprediksi harga rumah dengan karakteristik atau fitur tertentu secara akurat, dengan model paling buruk performanya (KNN) memiliki proporsi RMSE dan MAE terhadap mean yang sangat kecil terhadap mean (0.077 dan 0.062), kurang dari 10% mean, dan nilai R² sebesar 0.964547 pada test set, menunjukkan bahwa KNN dan dua model lainnya yang memiliki performa lebih baik dari dia, memiliki selisih prediksi yang kecil dibandingkan nilai asli harga rumah, dan dapat menjelaskan hampir semua varians pada variabel target (harga rumah).
 
-![img](https://www.dropbox.com/scl/fi/kl70d8b6g4blrikxj56j8/download-4.png?rlkey=hic19nx85vxx4uj3dni8w96hh&st=wfo4ev3r&dl=1)
+![img](https://i.imgur.com/u38Y1sE.png)
 
 Hasil Prediksi 5 sampel data test set:
 
@@ -449,7 +448,7 @@ Hasil Prediksi 5 sampel data test set:
 | 3 | 1.04039e+06 | 978179.212127 | 1.047002e+06  | 1.033746e+06  |
 | 4 | 7.94010e+05 | 769437.013846 | 8.125074e+05  | 7.876537e+05  |
 
-![img](https://www.dropbox.com/scl/fi/02c5c44ceciynuo4t9cu1/download-5.png?rlkey=c2e2tm3o0tb3g9lwtmxcff2ia&st=kyabejjr&dl=1)
+![img](https://i.imgur.com/U1lNrfB.png)
 
 Dapat dilihat dari grafik-grafik dan tabel diatas bahwa performa model Random Forest adalah yang paling baik, dengan MAE dan MSE yang paling kecil, dan R2 yang paling besar, baik pada train set dan test set. AdaBoost memiliki performa kedua paling baik, dan KNN menempati posisi terakhir, dengan performa paling buruk. Terlihat juga bahwa selisih memang kecil dengan nilai asli seperti ditandakan oleh proporsi RMSE dan MAE, dan tingginya nilai R2.
 
