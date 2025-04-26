@@ -11,7 +11,7 @@ Referensi riset terkait: [Abdul-Rahman, S., & Mutalib, S. (2021). Advanced Machi
 ### Problem Statements
 
 - Bagaimana hubungan harga rumah dengan fitur-fitur tertentu?
-- Berapakah harga rumah dengan karakteristik atau fitur tertentu?
+- Bagaimana mengetahui harga rumah dengan karakteristik atau fitur tertentu?
 
 ### Goals
 
@@ -43,7 +43,125 @@ Dataset yang digunakan pada proyek ini adalah [House Price Regression Dataset](h
 
 - House_Price (Variabel Target): Harga rumah, yang merupakan variabel dependen yang ingin diprediksi.
 
-Untuk tahap exploratory data analysis (EDA) dan visualisasi data dapat dilihat pada notebook yang dilampirkan.
+Menggunakan df.info(), dapat dilihat informasi dataset sebagai berikut:
+
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1000 entries, 0 to 999
+Data columns (total 8 columns):
+|   # | Column              |   Non-Null Count | Dtype   |
+|----:|:--------------------|-----------------:|:--------|
+|   0 | Square_Footage      |             1000 | int64   |
+|   1 | Num_Bedrooms        |             1000 | int64   |
+|   2 | Num_Bathrooms       |             1000 | int64   |
+|   3 | Year_Built          |             1000 | int64   |
+|   4 | Lot_Size            |             1000 | float64 |
+|   5 | Garage_Size         |             1000 | int64   |
+|   6 | Neighborhood_Quality|             1000 | int64   |
+|   7 | House_Price         |             1000 | float64 |
+dtypes: float64(2), int64(6)
+memory usage: 62.6 KB
+
+Dapat dilihat bahwa terdapat 1000 baris dari 8 kolom data numerik, dengan tidak ada data null atau hilang, dan jenis data berupa int64 (6 fitur) dan float64 (2 fitur).
+
+Dengan df.describe(), dapat dilihat informasi statistik tiap kolom:
+
+|                    |   Square_Footage |   Num_Bedrooms |   Num_Bathrooms |   Year_Built |   Lot_Size |   Garage_Size |   Neighborhood_Quality |   House_Price |
+|:-------------------|-----------------:|---------------:|----------------:|-------------:|-----------:|--------------:|-----------------------:|--------------:|
+| count              |      1000       |        1000   |          1000   |       1000   |   1000     |        1000   |                   1000 |    1.00000e+03 |
+| mean               |      2815.42    |          2.99  |             1.973 |       1986.55  |      2.77809 |          1.022  |                      5.615 |    6.18861e+05 |
+| std                |      1255.51    |          1.42756|             0.820332|         20.6329  |      1.2979  |          0.814973|                      2.88706|    2.53568e+05 |
+| min                |       503       |          1     |             1     |       1950   |      0.506058|          0     |                      1     |    1.11627e+05 |
+| 25%                |      1749.5     |          2     |             1     |       1969   |      1.66595 |          0     |                      3     |    4.01648e+05 |
+| 50%                |      2862.5     |          3     |             2     |       1986   |      2.80974 |          1     |                      6     |    6.28267e+05 |
+| 75%                |      3849.5     |          4     |             3     |       2004.25|      3.92332 |          2     |                      8     |    8.27141e+05 |
+| max                |      4999       |          5     |             3     |       2022   |      4.9893  |          2     |                     10     |    1.10824e+06 |
+
+Fungsi describe() memberikan informasi statistik pada masing-masing kolom, antara lain:
+
+- Count  adalah jumlah sampel pada data.
+- Mean adalah nilai rata-rata.
+- Std adalah standar deviasi.
+- Min yaitu nilai minimum setiap kolom.
+- 25% adalah kuartil pertama. Kuartil adalah nilai yang menandai batas interval dalam empat bagian sebaran yang sama.
+- 50% adalah kuartil kedua, atau biasa juga disebut median (nilai tengah).
+- 75% adalah kuartil ketiga.
+- Max adalah nilai maksimum.
+
+Karena sudah mengetahui tidak ada missing value dari df.info(), selanjutnya dataset dapat diperiksa untuk duplikat dan outlier.
+
+Data duplikat dapat kita periksa dengan df.duplicated() seperti berikut:
+
+duplicate_rows = df[df.duplicated()]
+print("Duplicate Rows:")
+print(duplicate_rows)
+
+dengan hasil output:
+
+Duplicate Rows:
+Empty DataFrame
+Columns: [Square_Footage, Num_Bedrooms, Num_Bathrooms, Year_Built, Lot_Size, Garage_Size, Neighborhood_Quality, House_Price]
+Index: []
+
+yang menandakan bahwa tidak ada baris data duplikat.
+
+Berikutnya untuk mengecek outlier menggunakan metode IQR, digunakan kode berikut:
+
+Q1 = df.quantile(0.25)
+Q3 = df.quantile(0.75)
+IQR = Q3 - Q1
+outliers = ((df < (Q1 - 1.5 * IQR)) | (df > (Q3 + 1.5 * IQR))).sum()
+outliers
+
+dengan output:
+
+| Column              | Missing Values |
+|:--------------------|---------------:|
+| Square_Footage      |              0 |
+| Num_Bedrooms        |              0 |
+| Num_Bathrooms       |              0 |
+| Year_Built          |              0 |
+| Lot_Size            |              0 |
+| Garage_Size         |              0 |
+| Neighborhood_Quality|              0 |
+| House_Price         |              0 |
+
+yang menandakan bahwa tidak ada outlier pada data. Hal ini dapat dilihat pada boxplot di notebook juga:
+
+![img](https://www.dropbox.com/scl/fi/ugvilms9fvqis3i4m2zyu/download.png?rlkey=lfy45t6geglg3579u7vp637sn&st=7aoh3nx1&dl=1)
+
+**Univariate Analysis**
+Menggunakan teknik analisis satu variabel untuk menganalisa data. Histogram data sebagai berikut:
+
+![img](https://www.dropbox.com/scl/fi/03k3w21ute66d4sp9brb0/download-1.png?rlkey=qonavzrhmgste4fhudq5sacsi&st=6rl7en5h&dl=1)
+
+Dapat dilihat bahwa dataset memiliki distribusi yang rata. Tiga fitur (Num_Bedrooms, Num_Bathrooms, Garage_Size) memiliki distribusi yang terlihat agak aneh karena rentang nilai diskrit mereka yang kecil, namun distribusi mereka juga rata.
+
+**Multivariate Analysis**
+Menggunakan teknik multivariate untuk menunjukkan hubungan antara dua atau lebih variabel pada data. Kali ini, kita tertarik pada hasil hubungan antara variabel target (harga rumah) dengan variabel lainnya.
+
+![img](https://www.dropbox.com/scl/fi/4jmwdpqv2njb3k78h9ena/download-2.png?rlkey=a1te5wowr0xbaqvg3v0b7mzjm&st=mrtec6r7&dl=1)
+
+Dapat dilihat bahwa Square_Footage memiliki korelasi positif yang kuat, dengan semua fitur lain memiliki korelasi yang lemah karena tidak membentuk pola yang positif atau negatif.
+
+![img](https://www.dropbox.com/scl/fi/py3e8vtl2bwu7w1a8z0z9/download-3.png?rlkey=378eayemy4gjs485f5iv13et6&st=mi5h21ns&dl=1)
+
+Matriks korelasi di atas mengonfirmasi pengamatan kita dari pairplot, dengan House_Price memiliki korelasi sangat tinggi (0.99) dengan Square_Footage, dan korelasi lemah dengan semua fitur lain. Bagi fitur dengan korelasi sangat kecil (<=0.01), kita akan melakukan drop dengan kode berikut:
+
+df = df.drop(['Num_Bedrooms', 'Num_Bathrooms', 'Neighborhood_Quality'], axis=1)
+
+Dengan df.info(), kita dapat melihat dataframe yang sudah didrop fitur tersebut:
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 1000 entries, 0 to 999
+Data columns (total 5 columns):
+|   # | Column          |   Non-Null Count | Dtype   |
+|----:|:----------------|-----------------:|:--------|
+|   0 | Square_Footage  |             1000 | int64   |
+|   1 | Year_Built      |             1000 | int64   |
+|   2 | Lot_Size        |             1000 | float64 |
+|   3 | Garage_Size     |             1000 | int64   |
+|   4 | House_Price     |             1000 | float64 |
+dtypes: float64(2), int64(3)
+memory usage: 39.2 KB
 
 ## Data Preparation
 Pada proyek ini, akan digunakan teknik Train-Test Split dan Standardisasi Data.
@@ -202,14 +320,140 @@ Dimana:
 R² berkisar dari 0 hingga 1, dengan 1 menunjukkan bahwa model menjelaskan semua varians dalam variabel target, dan 0 menunjukkan bahwa model tidak menjelaskan varians apa pun dalam variabel target.
 
 **Evaluasi Hasil Proyek**
+
+Pada tahap ini, kita akan mengevaluasi performa ketiga model menggunakan metrik Mean Square Error (MSE), Mean Absolute Error (MAE), dan R2. Sebelum pengujian menggunakan test set, kita harus melakukan standardisasi dengan scaler yang sama seperti pada train set, agar data berskala sama (Hanya untuk KNN, karena RF dan AdaBoost tidak peduli skala).
+
 |        | train_mse    | test_mse     | train_mae    | test_mae     | train_r2     | test_r2      |
 | :------- | :------------- | :------------- | :------------- | :------------- | :------------- | :------------- |
 | KNN      | 1379094432.787155 | 2285279964.636393 | 29263.346088   | 38271.001851   | 0.978511       | 0.964547       |
 | RandomForest | 81912686.95175  | 476631737.055197 | 7057.040997    | 17970.394885   | 0.998724       | 0.992606       |
 | Boosting   | 880410352.054793 | 948741444.830329 | 24261.081325   | 25087.878261   | 0.986281       | 0.985281       |
 
-Dapat dilihat bahwa performa model Random Forest adalah yang paling baik, dengan MAE dan MSE yang paling kecil, dan R2 yang paling besar, baik pada train set dan test set. AdaBoost memiliki performa kedua paling baik, dan KNN menempati posisi terakhir, dengan performa paling buruk. 
+Evaluasi dilakukan dengan ketiga metrik pada set train dan test. Dapat dilihat bahwa ketiga model mengalami peningkatan MSE dan MAE pada test set dibandingkan dengan train set, yang merupakan hal normal. Performa Random Forest paling baik, namun performa AdaBoost paling konsisten pada train dan test set. Perubahan R2 dari train ke test sangat kecil bagi ketiga model, menandakan model tidak overfitting.
 
-Maka, dari hasil ujicoba tersebut, model Random Forest yang paling baik untuk memprediksi harga rumah.
+![img](https://www.dropbox.com/scl/fi/kl70d8b6g4blrikxj56j8/download-4.png?rlkey=hic19nx85vxx4uj3dni8w96hh&st=wfo4ev3r&dl=1)
+
+Dapat dilihat dari grafik diatas bahwa performa model Random Forest adalah yang paling baik, dengan MAE dan MSE yang paling kecil, dan R2 yang paling besar, baik pada train set dan test set. AdaBoost memiliki performa kedua paling baik, dan KNN menempati posisi terakhir, dengan performa paling buruk.
+
+Selanjutnya, untuk memastikan lebih lanjut, digunakan kode pada notebook untuk menghitung proporsi akar MSE (atau disebut RMSE, agar skala sama dengan data asli) dan MAE terhadap mean, sebagai berikut:
+
+//Calculate the mean of house prices
+mean_house_price = np.mean(df['House_Price'])
+
+//Get RMSE (Root Mean Square Error) values of test set
+rmse_knn = np.sqrt(models.loc['test_mse', 'KNN'])
+rmse_rf = np.sqrt(models.loc['test_mse', 'RandomForest'])
+rmse_ada = np.sqrt(models.loc['test_mse', 'Boosting'])
+
+//Calculate the proportion
+proportion_knn = rmse_knn / mean_house_price
+proportion_rf = rmse_rf / mean_house_price
+proportion_ada = rmse_ada / mean_house_price
+
+print(f"Proportion of KNN RMSE to mean of house price: {proportion_knn}")
+print(f"Proportion of RF RMSE to mean of house price: {proportion_rf}")
+print(f"Proportion of AB RMSE to mean of house price: {proportion_ada}")
+
+yang mengeluarkan output berikut:
+Proportion of KNN RMSE to mean of house price: 0.07724610288681014
+Proportion of RF RMSE to mean of house price: 0.03527754468484738
+Proportion of AB RMSE to mean of house price: 0.04977150904574513
+
+Dapat dilihat bahwa proporsi RMSE sangat kecil jika dibandingkan dengan mean dari data harga rumah, yang menunjukkan bahwa akar dari selisih nilai prediksi dengan nilai sebenarnya yang dikuadrat sangat kecil dibandingkan mean harga rumah. Untuk MAE:
+
+//Get MAE values of test set
+mae_knn = models.loc['test_mae', 'KNN']
+mae_rf = models.loc['test_mae', 'RandomForest']
+mae_ada = models.loc['test_mae', 'Boosting']
+
+//Calculate the proportion
+proportion_knn = mae_knn / mean_house_price
+proportion_rf = mae_rf / mean_house_price
+proportion_ada = mae_ada / mean_house_price
+
+print(f"Proportion of KNN MAE to mean of house price: {proportion_knn}")
+print(f"Proportion of RF MAE to mean of house price: {proportion_rf}")
+print(f"Proportion of AB MAE to mean of house price: {proportion_ada}")
+
+dengan output:
+Proportion of KNN MAE to mean of house price: 0.06184102843486997
+Proportion of RF MAE to mean of house price: 0.02903785235066378
+Proportion of AB MAE to mean of house price: 0.04053879224105463
+
+Maka terlihat bahwa proporsi MAE terhadap mean juga sangat kecil, yang menunjukkan bahwa selisih nilai prediksi dengan nilai sebenarnya sangat kecil dibandingkan mean harga rumah.
+
+Berikutnya ketiga model juga diuji menggunakan set test, memprediksi 5 nilai pertama dengan kode berikut:
+
+//Create a DataFrame with the first 5 samples from the test set
+comparison_df = pd.DataFrame({
+    'Actual': y_test.iloc[:5],
+    'KNN': y_pred_knn_test[:5],
+    'RandomForest': y_pred_rf_test[:5],
+    'AdaBoost': y_pred_ada_test[:5]
+})
+
+Dengan output dataframe sebagai berikut:
+
+|   | Actual        | KNN             | RandomForest    | AdaBoost        |
+|--:|--------------:|----------------:|----------------:|----------------:|
+| 0 | 9.01000e+05 | 822241.955935 | 8.55440e+05   | 8.53697e+05   |
+| 1 | 4.94537e+05 | 516527.861433 | 5.08420e+05   | 5.03458e+05   |
+| 2 | 9.49404e+05 | 975953.974347 | 9.49884e+05   | 9.70672e+05   |
+| 3 | 1.04039e+06 | 978179.212127 | 1.047002e+06  | 1.033746e+06  |
+| 4 | 7.94010e+05 | 769437.013846 | 8.125074e+05  | 7.876537e+05  |
+
+![img](https://www.dropbox.com/scl/fi/02c5c44ceciynuo4t9cu1/download-5.png?rlkey=c2e2tm3o0tb3g9lwtmxcff2ia&st=kyabejjr&dl=1)
+
+Tabel dan grafik diatas menunjukkan bahwa selisih memang kecil dengan nilai asli seperti ditandakan oleh proporsi RMSE dan MAE, dan tingginya nilai R2.
+
+Mari mengevaluasi hasil proyek sesuai dengan statement awal:
+### Problem Statements
+
+- Bagaimana hubungan harga rumah dengan fitur-fitur tertentu?
+- Bagaimana mengetahui harga rumah dengan karakteristik atau fitur tertentu?
+
+### Goals
+
+- Mengetahui hubungan fitur-fitur dengan harga rumah.
+- Membuat model machine learning yang dapat memprediksi harga rumah seakurat mungkin berdasarkan fitur-fitur yang ada.
+
+### Solution statements
+- Menggunakan pairplot dan heatmap untuk melihat hubungan fitur dengan harga rumah.
+- Menggunakan tiga jenis algoritma regresi untuk menggunakan model yang mencapai performa yang terbaik.
+
+
+**1. Apakah kita mengetahui hubungan harga rumah dengan fitur-fitur tertentu seperti pada goals, dengan menggunakan pairplot dan heatmap untuk melihat hubungan fitur dengan harga rumah?**
+
+Kita telah mengetahui hubungan antara harga rumah dengan fitur-fitur lainnya, yang terlihat pada bagian EDA, dengan pairplot dan matriks korelasi sebagai berikut:
+
+![img](https://www.dropbox.com/scl/fi/4jmwdpqv2njb3k78h9ena/download-2.png?rlkey=a1te5wowr0xbaqvg3v0b7mzjm&st=mrtec6r7&dl=1)
+
+
+![img](https://www.dropbox.com/scl/fi/py3e8vtl2bwu7w1a8z0z9/download-3.png?rlkey=378eayemy4gjs485f5iv13et6&st=mi5h21ns&dl=1)
+
+Dapat dilihat bahwa Square_Footage memiliki korelasi positif yang kuat, dengan semua fitur lain memiliki korelasi yang lemah karena tidak membentuk pola yang positif atau negatif. Matriks korelasi di atas mengonfirmasi pengamatan kita dari pairplot, dengan House_Price memiliki korelasi sangat tinggi (0.99) dengan Square_Footage, dan korelasi lemah dengan semua fitur lain.
+
+**2. Apakah kita telah membuat cara mengetahui harga rumah dengan karakteristik atau fitur tertentu, dengan membuat 3 model machine learning regresi yang dapat memprediksi harga rumah seakurat mungkin berdasarkan fitur-fitur yang ada untuk diuji model mana memiliki performa terbaik sehingga terpilih sebagai model untuk prediksi harga rumah?**
+
+Kita telah membuat 3 model regresi yang dapat memprediksi harga rumah dengan karakteristik atau fitur tertentu secara akurat, dengan model paling buruk performanya (KNN) memiliki proporsi RMSE dan MAE terhadap mean yang sangat kecil terhadap mean (0.077 dan 0.062), kurang dari 10% mean, dan nilai R² sebesar 0.964547 pada test set, menunjukkan bahwa KNN dan dua model lainnya yang memiliki performa lebih baik dari dia, memiliki selisih prediksi yang kecil dibandingkan nilai asli harga rumah, dan dapat menjelaskan hampir semua varians pada variabel target (harga rumah).
+
+![img](https://www.dropbox.com/scl/fi/kl70d8b6g4blrikxj56j8/download-4.png?rlkey=hic19nx85vxx4uj3dni8w96hh&st=wfo4ev3r&dl=1)
+
+Hasil Prediksi 5 sampel data test set:
+
+|   | Actual        | KNN             | RandomForest    | AdaBoost        |
+|--:|--------------:|----------------:|----------------:|----------------:|
+| 0 | 9.01000e+05 | 822241.955935 | 8.55440e+05   | 8.53697e+05   |
+| 1 | 4.94537e+05 | 516527.861433 | 5.08420e+05   | 5.03458e+05   |
+| 2 | 9.49404e+05 | 975953.974347 | 9.49884e+05   | 9.70672e+05   |
+| 3 | 1.04039e+06 | 978179.212127 | 1.047002e+06  | 1.033746e+06  |
+| 4 | 7.94010e+05 | 769437.013846 | 8.125074e+05  | 7.876537e+05  |
+
+![img](https://www.dropbox.com/scl/fi/02c5c44ceciynuo4t9cu1/download-5.png?rlkey=c2e2tm3o0tb3g9lwtmxcff2ia&st=kyabejjr&dl=1)
+
+Dapat dilihat dari grafik-grafik dan tabel diatas bahwa performa model Random Forest adalah yang paling baik, dengan MAE dan MSE yang paling kecil, dan R2 yang paling besar, baik pada train set dan test set. AdaBoost memiliki performa kedua paling baik, dan KNN menempati posisi terakhir, dengan performa paling buruk. Terlihat juga bahwa selisih memang kecil dengan nilai asli seperti ditandakan oleh proporsi RMSE dan MAE, dan tingginya nilai R2.
+
+Maka, sesuai dengan goals dan solution statement, kita dapat memilih model Random Forest sebagai model machine learning yang dapat memprediksi harga rumah seakurat mungkin berdasarkan fitur-fitur yang ada, untuk menyelesaikan problem statement "Bagaimana mengetahui harga rumah dengan karakteristik atau fitur tertentu?", berdasarkan performa melalui metrik MSE, MAE, dan R2 seperti terlihat pada tabel dan grafik performa ketiga model.
+
 
 
